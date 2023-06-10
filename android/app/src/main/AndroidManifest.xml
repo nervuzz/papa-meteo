@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nervuzz.papa_meteo">
    <uses-permission android:name="android.permission.INTERNET" />
+   <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
    <application
         android:label="Papa Meteo"
         android:name="${applicationName}"

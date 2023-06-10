@@ -10,13 +10,21 @@
     android:id="@+id/widget_container">
 
     <TextView
-        android:id="@+id/widget_message"
-        android:layout_width="match_parent"
+        android:id="@+id/widget_city"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/widget_dt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
         android:textSize="14sp" />
 
     <ImageView
         android:id="@+id/widgetImg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
+
 </LinearLayout>
