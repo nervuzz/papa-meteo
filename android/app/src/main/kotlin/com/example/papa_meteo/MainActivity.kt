@@ -1,4 +1,4 @@
-package com.example.papa_meteo
+package com.nervuzz.papa_meteo
 
 import io.flutter.embedding.android.FlutterActivity
 

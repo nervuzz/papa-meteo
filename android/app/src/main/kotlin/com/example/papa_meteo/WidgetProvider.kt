@@ -1,4 +1,4 @@
-package com.example.papa_meteo // your package name
+package com.nervuzz.papa_meteo // your package name
 
 import android.os.Bundle
 import android.graphics.Bitmap
