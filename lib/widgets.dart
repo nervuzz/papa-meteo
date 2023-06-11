@@ -1,15 +1,9 @@
-import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:home_widget/home_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:tuple/tuple.dart';
 
 import 'constants.dart';
 import 'models.dart';
-import 'utilities.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -26,50 +20,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyAppState extends ChangeNotifier {
-  static Tuple2 firstCity = LIST_OF_CITIES.entries.first.value;
-  var forecastPeriod = getForecastPeriod();
-  String dropdownValue = LIST_OF_CITIES.entries.first.key;
-  int apiMeteoRow = firstCity.item1;
-  int apiMeteoCol = firstCity.item2;
-
-  void changeCity(String location) {
-    dropdownValue = location;
-    apiMeteoRow = LIST_OF_CITIES[location]!.item1;
-    apiMeteoCol = LIST_OF_CITIES[location]!.item2;
-
-    var apiCallUrl =
-        IcmApi(getForecastPeriod(), apiMeteoRow, apiMeteoCol).build();
-    notifyListeners();
-    _sendAndUpdate(location, apiCallUrl);
-  }
-
-  Future<void> _sendAndUpdate(String loc, String apiCallUrl) async {
-    await _sendData(loc, apiCallUrl);
-    await _updateWidget();
-  }
-
-  Future _sendData(String loc, String apiCallUrl) async {
-    try {
-      return Future.wait([
-        HomeWidget.saveWidgetData<String>('widgetImg', apiCallUrl),
-        HomeWidget.saveWidgetData<String>('city', loc),
-      ]);
-    } on PlatformException catch (exception) {
-      debugPrint('Error Sending Data. $exception');
-    }
-  }
-
-  Future _updateWidget() async {
-    try {
-      return HomeWidget.updateWidget(
-          name: 'HomeScreenWidgetProvider', iOSName: 'HomeScreenWidget');
-    } on PlatformException catch (exception) {
-      debugPrint('Error Updating Widget. $exception');
-    }
-  }
-}
-
 class MyHome extends StatelessWidget {
   final String title;
 
@@ -82,15 +32,13 @@ class MyHome extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     // log('[${appState.forecastPeriod}] Current city: ${appState.dropdownValue} [dropd: ${appState.dropdownValue}], Row: ${appState.apiMeteoRow}, Col: ${appState.apiMeteoCol}');
-    var apiCallUrl = IcmApi(
-            appState.forecastPeriod, appState.apiMeteoRow, appState.apiMeteoCol)
-        .build();
+    var apiCallUrl = IcmApi(appState.apiMeteoRow, appState.apiMeteoCol).build();
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
           builder: (BuildContext context) {
             return Image(
-              image: AssetImage("assets/img/home_icon.png"),
+              image: AssetImage('assets/img/home_icon.png'),
               width: 12,
               height: 12,
             );
@@ -104,13 +52,13 @@ class MyHome extends StatelessWidget {
       body: Center(
         child: CachedNetworkImage(
           placeholder: (context, url) => const CircularProgressIndicator(),
-          imageUrl: apiCallUrl.toString(),
+          imageUrl: apiCallUrl,
         ),
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
           children: [
-            Text("Coś tu kurła dam ${appState.forecastPeriod}"),
+            Text('PL 🇵🇱'),
             Spacer(),
             IconButton(icon: Icon(Icons.search), onPressed: () {}),
             IconButton(icon: Icon(Icons.more_vert), onPressed: () {}),

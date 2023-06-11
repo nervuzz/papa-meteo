@@ -3,7 +3,7 @@ import 'package:tuple/tuple.dart';
 const String APP_TITLE = 'Papa Meteo';
 
 const Map<String, Tuple2<int, int>> LIST_OF_CITIES = {
-  // (Row, Col) taken from http://meteo.icm.edu.pl
+  /// (Row, Col) coords taken from http://meteo.icm.edu.pl
   'Białystok': Tuple2(379, 285),
   'Bydgoszcz': Tuple2(381, 199),
   'Gdańsk': Tuple2(346, 210),
