@@ -23,7 +23,7 @@
         android:textSize="14sp" />
 
     <ImageView
-        android:id="@+id/widgetImg"
+        android:id="@+id/widget_meteo_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 
 import 'constants.dart';
 import 'models.dart';
+import 'preferences.dart';
+import 'screens.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -31,8 +33,6 @@ class MyHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    // log('[${appState.forecastPeriod}] Current city: ${appState.dropdownValue} [dropd: ${appState.dropdownValue}], Row: ${appState.apiMeteoRow}, Col: ${appState.apiMeteoCol}');
-    var apiCallUrl = IcmApi(appState.apiMeteoRow, appState.apiMeteoCol).build();
     return Scaffold(
       appBar: AppBar(
         leading: Builder(
@@ -46,13 +46,13 @@ class MyHome extends StatelessWidget {
         ),
         title: Text(title),
         actions: <Widget>[
-          PickCityDropdownButton(),
+          FavoriteLocationsDropdownButton(),
         ],
       ),
       body: Center(
         child: CachedNetworkImage(
           placeholder: (context, url) => const CircularProgressIndicator(),
-          imageUrl: apiCallUrl,
+          imageUrl: IcmApi(appState.apiMeteoRow, appState.apiMeteoCol).build(),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
@@ -60,8 +60,26 @@ class MyHome extends StatelessWidget {
           children: [
             Text('PL 🇵🇱'),
             Spacer(),
-            IconButton(icon: Icon(Icons.search), onPressed: () {}),
-            IconButton(icon: Icon(Icons.more_vert), onPressed: () {}),
+            Text(appState.dropdownValue),
+            Spacer(),
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ListCityScreen()),
+                  );
+                }),
+            IconButton(
+                icon: Icon(Icons.more_vert),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const FavoriteLocationsScreen()),
+                  );
+                }),
           ],
         ),
       ),
@@ -69,41 +87,56 @@ class MyHome extends StatelessWidget {
   }
 }
 
-class PickCityDropdownButton extends StatefulWidget {
-  const PickCityDropdownButton({super.key});
+class FavoriteLocationsDropdownButton extends StatefulWidget {
+  const FavoriteLocationsDropdownButton({super.key});
 
   @override
-  State<PickCityDropdownButton> createState() => _PickCityDropdownButtonState();
+  State<FavoriteLocationsDropdownButton> createState() =>
+      _FavoriteLocationsDropdownButtonState();
 }
 
-class _PickCityDropdownButtonState extends State<PickCityDropdownButton> {
-  String dropdownValue = LIST_OF_CITIES.entries.first.key;
-
+class _FavoriteLocationsDropdownButtonState
+    extends State<FavoriteLocationsDropdownButton> {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-
-    return DropdownButton<String>(
-      value: dropdownValue,
-      icon: const Icon(Icons.sunny),
-      elevation: 16,
-      style: const TextStyle(color: Colors.black, fontSize: 16),
-      underline: Container(
-        height: 0,
-      ),
-      onChanged: (String? value) {
-        // This is called when the user selects an item
-        appState.changeCity(value!);
-        setState(() {
-          dropdownValue = value;
-        });
+    return FutureBuilder<List<String>>(
+      future: userFavoriteLocations(),
+      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        if (snapshot.hasData) {
+          String aValue;
+          List<DropdownMenuItem<String>> aItems;
+          if (snapshot.data!.isNotEmpty) {
+            aValue = snapshot.data!.first;
+            aItems =
+                snapshot.data!.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList();
+          } else {
+            aValue = '';
+            aItems = [
+              DropdownMenuItem<String>(
+                  value: aValue, child: Text('No favorites 😢')),
+            ];
+          }
+          return DropdownButton<String>(
+            value: aValue,
+            elevation: 16,
+            style: const TextStyle(color: Colors.black, fontSize: 19),
+            underline: Container(
+              height: 0,
+            ),
+            onChanged: (String? value) {
+              appState.changeCity(value!);
+            },
+            items: aItems,
+          );
+        }
+        return Container();
       },
-      items: LIST_OF_CITIES.keys.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
     );
   }
 }
