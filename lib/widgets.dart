@@ -101,7 +101,7 @@ class _FavoriteLocationsDropdownButtonState
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     return FutureBuilder<List<String>>(
-      future: userFavoriteLocations(),
+      future: getFavorites(),
       builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
         if (snapshot.hasData) {
           String aValue;

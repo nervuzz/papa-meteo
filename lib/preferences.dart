@@ -11,15 +11,16 @@ Future<void> initSharedPrefs() async {
       prefs.getStringList('favoriteLocations') ?? <String>['Kraków'];
   prefs.setStringList('favoriteLocations', favoriteLocations);
   changeToNextCity();
-  debugPrint("initSharedPrefs end (change + call)");
   // <END> User's favorite locations
 }
 
 /// Get favorite city (location) list
 Future<List<String>> getFavorites() async {
-  List<String>? favoriteLocations = (await SharedPreferences.getInstance())
-      .getStringList('favoriteLocations');
-  return favoriteLocations!;
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  List<String> favoriteLocations =
+      prefs.getStringList('favoriteLocations') as List<String>;
+  debugPrint('Favorite locations: $favoriteLocations');
+  return favoriteLocations;
 }
 
 /// Add city (location) to favorites list
@@ -29,7 +30,7 @@ Future<void> markFavorite(String location) async {
   Set<String> _set = favoriteLocations!.toSet();
   _set.add(location);
   prefs.setStringList('favoriteLocations', _set.toList());
-  debugPrint("markFavorite: $location");
+  debugPrint('Marked as favorite: $location');
 }
 
 /// Remove city (location) from favorites list
@@ -38,10 +39,5 @@ Future<void> unmarkFavorite(String location) async {
   List<String>? favoriteLocations = prefs.getStringList('favoriteLocations');
   favoriteLocations!.remove(location);
   prefs.setStringList('favoriteLocations', favoriteLocations);
-  debugPrint("unmarkFavorite: $location");
-}
-
-Future<List<String>> userFavoriteLocations() async {
-  List<String> userFavs = await getFavorites();
-  return userFavs;
+  debugPrint('Unmarked as favorite: $location');
 }

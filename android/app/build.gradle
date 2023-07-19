@@ -61,10 +61,6 @@ android {
             signingConfig signingConfigs.debug
         }
     }
-
-    // buildFeatures {
-    //     viewBinding true
-    // }
 }
 
 flutter {
@@ -74,5 +70,4 @@ flutter {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.squareup.picasso:picasso:2.8"
-    implementation "androidx.work:work-runtime-ktx:2.8.1"
 }
